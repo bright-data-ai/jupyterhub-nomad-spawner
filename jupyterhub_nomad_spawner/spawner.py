@@ -357,7 +357,7 @@ class NomadSpawner(Spawner):
             env = self.get_env()
             args = self.get_args()
             hub_connect_url = env.get('HUB_CONNECT_URL', '')
-            if hub_connect_url in env:
+            if hub_connect_url:
                 env.update({
                     'JUPYTERHUB_API_URL': f'{hub_connect_url}/hub/api',
                     'JUPYTERHUB_ACTIVITY_URL': f'{hub_connect_url}/hub/api/users/{self.user.name}/activity'
