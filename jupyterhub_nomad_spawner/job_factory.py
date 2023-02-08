@@ -25,6 +25,7 @@ class JobData(BaseModel):
 
     job_name: str
     username: str
+    dns_server: str
     notebook_name: Optional[str] = None
 
     service_name: str

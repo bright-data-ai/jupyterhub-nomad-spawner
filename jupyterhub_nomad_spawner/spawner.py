@@ -121,6 +121,18 @@ class NomadSpawner(Spawner):
         verify = os.environ.get("NOMAD_TLS_SKIP_VERIFY", "")
         return verify.lower() in ("yes", "true", "t", "1")
 
+    # Dns
+    dns_server = Unicode(
+        help="""
+        The dns server
+        """
+    ).tag(config=True)
+
+    @default("dns_server")
+    def _default_consul_http_addr(self):
+        return os.environ.get("DNS_SERVER", "8.8.8.8")
+
+
     # Consul
     consul_http_addr = Unicode(
         help="""
@@ -359,6 +371,7 @@ class NomadSpawner(Spawner):
 
             job_hcl = create_job(
                 JobData(
+                    dns_server=self.dns_server,
                     job_name=self.job_name,
                     username=self.user.name,
                     notebook_name=self.name,

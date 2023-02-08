@@ -11,7 +11,7 @@ job "{{ job_name }}" {
     }
     group "nb" {
 
-        {% if policies %}
+        {% if c %}
         vault {
             policies = {{ policies  | tojson }}
         }
@@ -30,6 +30,9 @@ job "{{ job_name }}" {
         {% endif %}
 
         network {
+           dns {
+                 servers = ["{{ dns_server }}"]
+           }
             port "notebook" {
                 to = 8888
             }
