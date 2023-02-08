@@ -132,7 +132,6 @@ class NomadSpawner(Spawner):
     def _default_dns_server(self):
         return os.environ.get("DNS_SERVER", "8.8.8.8")
 
-
     # Consul
     consul_http_addr = Unicode(
         help="""
@@ -357,6 +356,12 @@ class NomadSpawner(Spawner):
             self.log.info("server name: %s", self.name)
             env = self.get_env()
             args = self.get_args()
+            hub_connect_url = env.get('HUB_CONNECT_URL', '')
+            if hub_connect_url in env:
+                env.update({
+                    'JUPYTERHUB_API_URL': f'{hub_connect_url}/hub/api',
+                    'JUPYTERHUB_ACTIVITY_URL': f'{hub_connect_url}/hub/api/users/{self.user.name}/activity'
+                })
 
             volume_data: Optional[JobVolumeData] = None
 
@@ -555,8 +560,8 @@ class NomadSpawner(Spawner):
             err = f"Invalid Datacenters list {options['datacenters']}"
             raise Exception(err)
         if (
-            options["volume_type"] == "csi"
-            and options["volume_csi_plugin_id"] not in self.csi_plugin_ids
+                options["volume_type"] == "csi"
+                and options["volume_csi_plugin_id"] not in self.csi_plugin_ids
         ):
             err = f"Invalid CSI Plugin {options['volume_csi_plugin_id']}"
             raise Exception(err)
@@ -599,7 +604,6 @@ def build_consul_config_from_options(options: NomadSpawner) -> ConsulServiceConf
 
 
 def build_nomad_httpx_client(config: NomadServiceConfig) -> AsyncClient:
-
     verify: Union[bool, ssl.SSLContext] = True
     cert: Optional[Tuple[str, str]] = None
     if config.tls_config:
@@ -625,7 +629,6 @@ def build_nomad_httpx_client(config: NomadServiceConfig) -> AsyncClient:
 
 
 def build_consul_httpx_client(config: ConsulServiceConfig) -> AsyncClient:
-
     verify: Union[bool, ssl.SSLContext] = True
     cert: Optional[Tuple[str, str]] = None
     if config.tls_config:
