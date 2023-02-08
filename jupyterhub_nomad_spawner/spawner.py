@@ -129,7 +129,7 @@ class NomadSpawner(Spawner):
     ).tag(config=True)
 
     @default("dns_server")
-    def _default_consul_http_addr(self):
+    def _default_dns_server(self):
         return os.environ.get("DNS_SERVER", "8.8.8.8")
 
 
